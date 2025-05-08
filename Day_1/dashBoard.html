@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DashBoard Page</title>
+    <link rel="stylesheet" href="css/dashBoard.css">
+</head>
+<body>
+    <h2 id="main">Welcome,<span id="userName"></span> (<span id="userType"></span>)</h2>
+    <button id="logout-btn">Logout</button>
+    <p id="logout-message"></p>
+    <div id="container" class="hidden" >
+        <h2 id="main-title">Enter Your Project Details</h2>
+        <form  method="post">
+          <!-- Project Title -->
+          <label for="project-title">Enter Project Title:</label>
+          <input type="text" id="project-title"  placeholder="Project Title" required>
+          <!-- Project Description -->
+          <label for="project-description">Enter Description:</label>
+          <textarea id="project-description"  placeholder="Write Note on Project..." required></textarea>
+          <!-- Funding Amount -->
+          <div class="funding-details">
+            <h3>Funding Amount</h3>
+            <label for="funding-amount">Total Amount:</label>
+            <input type="number" id="funding-amount"  placeholder="Enter Fund Goal" required>
+          </div>
+          <!-- Reward Section -->
+          <div class="reward-form">
+            <h3>Submit Your Reward Idea</h3>
+            <div class="form-group">
+              <label for="reward-amount">Donation Amount ($):</label>
+              <input type="number" id="reward-amount"  required min="1">
+            </div>
+            <div class="form-group">
+              <label for="reward-desc">Your Custom Reward:</label>
+              <textarea id="reward-desc"  placeholder="Describe your Reward..." required></textarea>
+            </div>
+          </div>
+          <!-- Timeline Section -->
+          <div class="timeline-form">
+            <h3>Enter Your Project Timeline</h3>
+            <div class="form-group">
+              <label for="phase-title">Phase Title:</label>
+              <input type="text" id="phase-title"  placeholder="e.g., Prototype Development" required>
+            </div>
+            <div class="form-group">
+              <label for="phase-date">Estimated Date:</label>
+              <input type="date" id="phase-date"  required>
+            </div>
+            <div class="form-group">
+              <label for="phase-description">Description:</label>
+              <textarea id="phase-description"  placeholder="Brief summary of this phase..." required></textarea>
+            </div>
+          </div>
+        </form>
+        <!-- Final Submit -->
+         <p id="message"></p>
+        <button  id="add-project-btn">Add Your Project</button>
+    </div>
+    <h3 style="color: brown; font-size: 25px;margin-bottom: 5px;" id="heading">Projects</h3>
+    
+     <div id="searchAndFilter" class="hidden">
+      <div id="category">
+        <h3>Search based on Categories</h3>
+        <label for="searchedQuery">Enter the Project : </label>
+        <input type="text" id="searchedQuery" placeholder="Project Name">
+        <button id="search-btn">Search</button>
+     </div>
+     <!-- filter  -->
+     <div id="fundingGoal">
+        <h3>Filter based on Funding Goals</h3>
+        <label for="goal">Funding Goal:</label>
+        <select  id="goal">
+            <option value="">Select Goal</option>
+            <option value="below-1000">Below 1,000</option>
+            <option value="1000-5000">1,000 - 5,000</option>
+            <option value="5000-10000">5,000 - 10,000</option>
+            <option value="10000-25000">10,000 - 25,000</option>
+            <option value="above-25000">Above 25,000</option>
+        </select>
+     </div>
+     </div>
+    
+    <div id="projects">
+      
+    </div>
+    
+      
+</body>
+</html>
+<script type="module" src="js/dashBoard.js"></script>
+<script type="module" src="js/auth.js"></script>

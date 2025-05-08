@@ -1,0 +1,133 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.hidden{
+    display: none;
+}
+body{
+    text-align: center;
+    background-color: white;
+}
+#main{
+    margin: 10px;
+}
+#userName{
+    color: blueviolet;
+    font-size: 25px;
+    margin: 4px;
+}
+#userType{
+    color: rgb(32, 156, 15);
+}
+#main-title{
+    color: rgb(16, 66, 202);
+}
+#logout-btn{
+    width: 150px;
+    padding: 5px;
+    background-color: rgb(252, 31, 16);
+    border: none;
+    border-radius: 10px;
+    color: white;font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 25px;
+}
+#logout-btn:hover{
+    width: 150px;
+    padding: 5px;
+    background-color: rgb(247, 63, 207);
+    border: 1px solid black;
+    border-radius: 10px;
+    color: white;font-size: 16px;
+}
+#container{
+    margin: 10px;
+}
+input{
+    width: 20%;
+    height: 3vh;
+    padding: 10px;
+}
+textarea{
+    width: 20%;
+    height: 6vh;
+    /* align-content: center; */
+    padding: 5px;
+    margin-top: 15px;
+}
+.container h3{
+    margin: 10px;
+}
+#phase-date{
+    margin: 10px;
+}
+#add-project-btn{
+    width: 20%;
+    height: 6vh;
+    background-color: aqua;
+    border: none;
+    border-radius: 5px;
+    color: rgb(15, 4, 4);
+    padding: 5px;
+    margin: 5px;
+}
+#add-project-btn:hover{
+    background-color: rgb(187, 212, 74);
+    border: 1px solid black;
+    border-radius: 10px;
+    cursor: pointer;
+}
+#projects{
+    display: grid;
+    gap: 10px 20px;
+    grid-template-columns: repeat(2,1fr);
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px;
+}
+#projects div{
+    background-color: rgb(160, 209, 193);
+    align-content: start;
+    text-align: start;
+    padding:10px ;
+} 
+#projects div h3{
+    margin: 4px;
+    text-align: start;
+    color:orangered;
+    font-weight: bold;
+    font-size: 20px;
+}
+#projects div p{
+    margin: 5px;
+}
+#projects div h4{
+    margin: 5px;
+    text-align: start;
+    font-size: 16px;
+}
+#projects div button{
+    background-color: rgb(107, 107, 235);
+    margin: 5px;
+    width: 40%;
+    padding: 6px;
+    color: white;
+    border-radius:10px ;
+    font-size: 18px;
+    cursor: pointer;
+}
+#projects div button:hover{
+    background-color: rgb(133, 235, 107);
+    color: rgb(10, 10, 10);
+    border-radius:10px ;
+    font-size: 18px;
+    width: 50%;
+}
+#searchAndFilter{
+    display: flex;
+    flex-direction: row;
+    
+}
+
