@@ -59,13 +59,12 @@
         <button  id="add-project-btn">Add Your Project</button>
     </div>
     <h3 style="color: brown; font-size: 25px;margin-bottom: 5px;" id="heading">Projects</h3>
-    
+    <!-- searching and filtering -->
      <div id="searchAndFilter" class="hidden">
       <div id="category">
         <h3>Search based on Categories</h3>
         <label for="searchedQuery">Enter the Project : </label>
         <input type="text" id="searchedQuery" placeholder="Project Name">
-        <button id="search-btn">Search</button>
      </div>
      <!-- filter  -->
      <div id="fundingGoal">
@@ -73,13 +72,16 @@
         <label for="goal">Funding Goal:</label>
         <select  id="goal">
             <option value="">Select Goal</option>
-            <option value="below-1000">Below 1,000</option>
+            <option value="all">All</option>
+            <option value="<1000">Below 1,000</option>
             <option value="1000-5000">1,000 - 5,000</option>
             <option value="5000-10000">5,000 - 10,000</option>
             <option value="10000-25000">10,000 - 25,000</option>
             <option value="above-25000">Above 25,000</option>
         </select>
+        
      </div>
+     <button id="searchAndFilter-btn">Search and Filter</button>
      </div>
     
     <div id="projects">

@@ -19,14 +19,14 @@ document.addEventListener("DOMContentLoaded",()=>{
                 let name = dataDoc.data().name 
                 document.getElementById("userName").innerText = name 
                 document.getElementById("userType").innerText=userType
-                console.log(userType)
+                // console.log(userType)
                 if(userType=="project-creater"){
                     // document.getElementById("projects").classList.remove("hidden")
                     document.getElementById("searchAndFilter").classList.add("hidden")
                     document.getElementById("container").classList.remove("hidden")
                     document.getElementById("heading").classList.remove("hidden")
                 }
-                else{
+                else if(userType!="project-creater"){
                     document.getElementById("searchAndFilter").classList.remove("hidden")
                     document.getElementById("container").classList.add("hidden")
                     document.getElementById("heading").classList.remove("hidden")
@@ -45,15 +45,19 @@ document.addEventListener("DOMContentLoaded",()=>{
         let projectRef = collection(db,"Projects")
         let queries = await getDocs(projectRef) 
         // whole document 
+        // console.log(queries)
         queries.forEach((doc)=>{
+            // search and filter 
+            
             let projectData = doc.data()
-            displayProjects(doc.id,projectData,project.uid,type)
+            displayProjects(projectData,type)
         })
 
     }
 
     // display projects 
-    function displayProjects(id,project,uid,type){
+    function displayProjects(project,type){
+        // container.innerText=""
         let Div = document.createElement("div") 
         Div.classList.add("project")
         Div.innerHTML=`
@@ -71,6 +75,9 @@ document.addEventListener("DOMContentLoaded",()=>{
         let contributeBtn = document.createElement("button")
         contributeBtn.classList.add("hidden")
         contributeBtn.innerText="Contribute"
+        contributeBtn.addEventListener("click",()=>{
+            window.location.href="contribute.html"       
+        })
         // adding button to project 
         Div.appendChild(contributeBtn)
         // showing contribute button only for backers 
@@ -84,7 +91,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     } 
 
     // adding project
-    document.getElementById("heading").classList.add("hidden")
+    // document.getElementById("heading").classList.add("hidden")
     let addBtn = document.getElementById("add-project-btn")
     
     addBtn.addEventListener("click",async()=>{
@@ -117,16 +124,112 @@ document.addEventListener("DOMContentLoaded",()=>{
             phaseDescription:phaseDescription
         })
         // clearing after ading
-        projectTitle.innerText=""
-        projectDescription.innerText=""
-        projectCost.innerText=""
-        donationAmount.innerText=""
-        rewardDescription.innerText=""
-        phaseTitle.innerText=""
-        estimatedDate.innerText=""
-        phaseDescription.innerText=""
+        projectTitle=""
+        projectDescription=""
+        projectCost=""
+        donationAmount=""
+        rewardDescription=""
+        phaseTitle=""
+        estimatedDate=""
+        phaseDescription=""
         // loading 
         loadProject(currentUser,document.getElementById("userType").innerText)
     })
+
+
+     
+    document.getElementById("searchAndFilter-btn").addEventListener("click",async()=>{
+        let searchedQuery = document.getElementById("searchedQuery").value 
+        // console.log(searchedQuery)
+        let goalAmount = document.getElementById("goal").value 
+        if(!searchedQuery && !goalAmount) {
+            alert('Please select or enter a search term before applying filters...')
+            return
+        } 
+        // console.log(goalAmount)
+        let dataRef = collection(db,"Projects")
+        let wholeDoc = await getDocs(dataRef)
+        // checking searchedquery
+         
+       let searchedArray = [];
+        searchedQuery = searchedQuery.trim().toLowerCase();
+        if (searchedQuery) {
+            wholeDoc.forEach((doc) => {
+                let projectData = doc.data();
+                // console.log(projectData.cost, typeof projectData.cost, typeof +projectData.cost);
+                if (projectData.title && projectData.title.toLowerCase().includes(searchedQuery)) {
+                    searchedArray.push(projectData);
+                }
+            })
+        }
+        // console.log(searchedArray)
+        // filtering 
+        let filterArray =[]
+        if(searchedArray.length==0){
+            wholeDoc.docs.filter((doc)=>{
+                let projectData = doc.data()
+                if(goalAmount=="all"){
+                    filterArray.push(projectData)
+                }
+                else if(goalAmount=="<1000" && +(projectData.cost)<1000){
+                        filterArray.push(projectData)
+                }
+                else if(goalAmount=="1000-5000" && +(projectData.cost)>=1000 && projectData.cost<=5000){
+                        filterArray.push(projectData)
+                }
+                else if(goalAmount=="5000-10000" && +(projectData.cost)>=5000 && projectData.cost<=10000){
+                        filterArray.push(projectData)
+                }
+                else if(goalAmount=="10000-25000" && +(projectData.cost)>=10000 && projectData.cost<=25000){
+                        filterArray.push(projectData)
+                }
+                else{
+                    if(+(projectData.cost)>25000 )
+                        filterArray.push(projectData)
+                }  
+            })
+        }
+        if(goalAmount==""){
+            filterArray=searchedArray
+        }
+        else if(searchedArray.length!=0){
+            searchedArray.forEach((project)=>{
+                // let projectData = doc.data()
+                if(goalAmount=="all"){
+                    filterArray.push(project)
+                }
+                else if(goalAmount=="<1000" && +(project.cost)<1000){
+                    filterArray.push(project)
+                }
+                else if(goalAmount=="1000-5000" && +(project.cost)>=1000 && project.cost<=5000){
+                    filterArray.push(project)
+                }
+                else if(goalAmount=="5000-10000" && +(project.cost)>=5000 && project.cost<=10000){
+                    filterArray.push(project)
+                }
+                else if(goalAmount=="10000-25000" && +(project.cost)>=10000 && project.cost<=25000){
+                    filterArray.push(project)
+                }
+                else if(+(project.cost)>25000){
+                    filterArray.push(project)
+                }  
+            })
+        }
+        if(filterArray.length==0) alert("No Data Found")
+        container.innerText=""
+        let type = document.getElementById("userType").value
+        filterArray.forEach((project)=>{
+        displayProjects(project,type)})
+        // console.log(filterArray,searchedArray)
+        // clearing input boxes after searching and filtering
+        document.getElementById("searchedQuery").value=""
+        document.getElementById("goal").value =""
+        })
+        
+});
     
-})
+        
+    
+    
+    
+
