@@ -2,7 +2,9 @@ import {auth,db} from "../firebaseConfig.js"
 import {signOut,createUserWithEmailAndPassword,signInWithEmailAndPassword,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js"
 import {doc,setDoc,getDoc,deleteDoc,addDoc,collection,getDocs} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js" 
 
+
 document.addEventListener("DOMContentLoaded",()=>{
+   
     let container = document.getElementById("projects")
     let currentUser = null
     onAuthStateChanged(auth,async(user)=>{
@@ -16,19 +18,21 @@ document.addEventListener("DOMContentLoaded",()=>{
             // console.log(dataDoc)
             if(dataDoc.exists()){
                 let userType = dataDoc.data().userType
+                // console.log(u)
                 let name = dataDoc.data().name 
                 document.getElementById("userName").innerText = name 
                 document.getElementById("userType").innerText=userType
                 // console.log(userType)
-                if(userType=="project-creater"){
+                if(userType=="Project-Creater"){
                     // document.getElementById("projects").classList.remove("hidden")
                     document.getElementById("searchAndFilter").classList.add("hidden")
                     document.getElementById("container").classList.remove("hidden")
                     document.getElementById("heading").classList.remove("hidden")
+                    
                 }
-                else if(userType!="project-creater"){
+                else if(userType!="Project-Creater"){
                     document.getElementById("searchAndFilter").classList.remove("hidden")
-                    document.getElementById("container").classList.add("hidden")
+                    document.getElementById("container").style.display="none"
                     document.getElementById("heading").classList.remove("hidden")
                 }
                 loadProject(user,userType)
@@ -56,48 +60,84 @@ document.addEventListener("DOMContentLoaded",()=>{
     }
 
     // display projects 
-    function displayProjects(project,type){
-        // container.innerText=""
-        let Div = document.createElement("div") 
-        Div.classList.add("project")
-        Div.innerHTML=`
-            <h3> Project Title : ${project.title}</h3>
-            <p> Project Id : ${project.projectId}</p>
-            <p id=""> Project Description : ${project.projectDescription}</p>
-            <p> Funding Goal : ${project.cost}</p>
-            <p> Reward Amount : ${project.donationAmount}</p>
-            <p  id=""> Reward Description : ${project.rewardDescription}</p>
-            <h4> Project Phase : ${project.phaseTitle}</h4>
-            <p> Estimate Date to Complete : ${project.estimatedDate}</p>
-            <p  id=""> phase Description : ${project.phaseDescription}</p>
-        `
-        // add button 
-        let contributeBtn = document.createElement("button")
-        contributeBtn.classList.add("hidden")
-        contributeBtn.innerText="Contribute"
-        contributeBtn.addEventListener("click",()=>{
-            window.location.href="contribute.html"       
-        })
-        // adding button to project 
-        Div.appendChild(contributeBtn)
-        // showing contribute button only for backers 
-        if(type!="project-creater"){
-            contributeBtn.classList.remove("hidden")
-        }
-        else{
-            contributeBtn.classList.add("hidden")
-        }
-        container.appendChild(Div)
-    } 
+    function displayProjects(project, type) {
+    
+    let Div = document.createElement("div");
+    Div.classList.add("project");
 
-    // adding project
-    // document.getElementById("heading").classList.add("hidden")
+    // raised amount accessing 
+    // retriving data
+
+    const donatedAmount = +(localStorage.getItem("totalDonation"))
+    // removing data in local storage 
+    localStorage.removeItem("totalDonation")
+    // console.log(donatedAmount)
+    if(project.amountRaised){
+        project.amountRaised+=donatedAmount
+    }
+    else{
+        project.amountRaised=0 
+        project.amountRaised+=donatedAmount
+    }
+    // console.log(project.amountRaised)
+    if (typeof project.amountRaised !== "number" || isNaN(project.amountRaised)) {
+        project.amountRaised = 0; 
+    }
+        // console.log("Aswartha")
+    Div.innerHTML = `
+        <h3>Project Title: ${project.title}</h3>
+        <p>Project Id: ${project.projectId}</p>
+        <p>Project Description: ${project.projectDescription}</p>
+        <p>Funding Goal: ₹${project.cost.toLocaleString()}</p>
+        <p>Reward Amount: ₹${project.donationAmount.toLocaleString()}</p>
+        <p>Reward Description: ${project.rewardDescription}</p>
+        <h4>Project Phase: ${project.phaseTitle}</h4>
+        <p>Estimate Date to Complete: ${project.estimatedDate}</p>
+        <p>Phase Description: ${project.phaseDescription}</p>
+        <p>Amount Raised: ₹${project.amountRaised} of ₹${project.cost}</p>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar_${project.projectId}" style="width: 0%;">0%</div>
+        </div>
+    `
+    let projectId = project.projectId
+    const progressPercentage = Math.min((project.amountRaised / project.cost) * 100, 100);
+    const progressBar = Div.querySelector(`#progressBar_${project.projectId}`);
+    progressBar.style.width = `${progressPercentage}%`;
+    progressBar.innerText = `${progressPercentage.toFixed(1)}%`;
+
+    let contributeBtn = document.createElement("button");
+    contributeBtn.innerText = "Contribute";
+    if (type !== "Project-Creater") {
+        contributeBtn.style.display = "block";  
+        contributeBtn.addEventListener("click", () => {
+            
+            window.location.href = "contribute.html";
+            addAmount(projectId)
+        });
+    } else {
+        contributeBtn.style.display = "none"; 
+        document.getElementById("add-project-btn").addEventListener("click",()=>{
+                contributeBtn.style.display = "none";     
+        })
+    }
+    // Add the contribute button to the project div
+    Div.appendChild(contributeBtn);
+
+    // Append the project div to the container
+    container.appendChild(Div);
+    }
+    // }
+
+
+    // adding project in the fireStore
+    
     let addBtn = document.getElementById("add-project-btn")
     
     addBtn.addEventListener("click",async()=>{
         document.getElementById("heading").classList.remove("hidden")
-        document.getElementById("container").classList.add("hidden")
-        // console.log("Lopala unna")
+        document.getElementById("container").style.display="none"
+        
+        
         // inputs taking 
         let projectTitle = document.getElementById("project-title").value.trim()
         let projectDescription = document.getElementById("project-description").value .trim()
@@ -110,6 +150,7 @@ document.addEventListener("DOMContentLoaded",()=>{
         // error handling
         if(!projectTitle || !projectDescription || !projectCost || !donationAmount || !rewardDescription || !phaseTitle || !estimatedDate || !phaseDescription){
             document.getElementById("message").innerText = "Please fill in all the feilds..."
+            alert("Please fill all the details !!")
             return 
         }
         await addDoc(collection(db,"Projects"),{
@@ -117,21 +158,23 @@ document.addEventListener("DOMContentLoaded",()=>{
             title:projectTitle,
             projectDescription:projectDescription,
             cost:projectCost,
-            donationAmount:donationAmount,
+            rewardAmount:donationAmount,
             rewardDescription:rewardDescription,
             phaseTitle:phaseTitle,
             estimatedDate:estimatedDate,
             phaseDescription:phaseDescription
+            
         })
         // clearing after ading
-        projectTitle=""
-        projectDescription=""
-        projectCost=""
-        donationAmount=""
-        rewardDescription=""
-        phaseTitle=""
-        estimatedDate=""
-        phaseDescription=""
+        document.getElementById("project-title").value=""
+        document.getElementById("project-description").value =""
+        document.getElementById("funding-amount").value=""
+         document.getElementById("reward-amount").value =""
+         document.getElementById("reward-desc").value=""
+         document.getElementById("phase-title").value=""
+        document.getElementById("phase-date").value=""
+        document.getElementById("phase-description").value=""
+        
         // loading 
         loadProject(currentUser,document.getElementById("userType").innerText)
     })
@@ -215,7 +258,15 @@ document.addEventListener("DOMContentLoaded",()=>{
                 }  
             })
         }
-        if(filterArray.length==0) alert("No Data Found")
+        if(filterArray.length==0){
+            alert("No data found..")
+            // let dataReference = collection(db,"Projects")
+            // let wholeDocument = await getDocs(dataReference)
+            // wholeDocument.forEach((doc)=>{
+            //     let project = doc.data()
+            //     filterArray.push(project)
+            // })
+        }
         container.innerText=""
         let type = document.getElementById("userType").value
         filterArray.forEach((project)=>{
@@ -226,7 +277,7 @@ document.addEventListener("DOMContentLoaded",()=>{
         document.getElementById("goal").value =""
         })
         
-});
+})
     
         
     

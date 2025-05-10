@@ -60,6 +60,17 @@ window.addEventListener("DOMContentLoaded",()=>{
     }
 
 })
+let flag = true 
+    document.getElementById("theme").addEventListener("click",()=>{
+        if(flag){
+            document.body.style.backgroundColor="gray"
+            flag = false
+        }
+        else{
+            document.body.style.backgroundColor="white"
+            flag = true
+        }
+    })
 // export let currentUser = null;
 
 // onAuthStateChanged(auth, async (user) => {
